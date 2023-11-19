@@ -31,8 +31,8 @@ func main() {
 	listItemInnerLinesRegex := regexp.MustCompile(`^[\s0-9].*`)
 
 	nextSundayRegex := regexp.MustCompile(`Lord willing, we will gather next Sunday`)
-	nextSundayAMServiceRegex := regexp.MustCompile(`AM Service: `)
-	nextSundayPMServiceRegex := regexp.MustCompile(`PM Service: `)
+	nextSundayAMServiceRegex := regexp.MustCompile(`AM [S|s]ervice: `)
+	nextSundayPMServiceRegex := regexp.MustCompile(`PM [S|s]ervice: `)
 	nextOfferingRegex := regexp.MustCompile(`Next Lord’s Day offering`)
 
 	readFile, err := os.Open("in.txt")
