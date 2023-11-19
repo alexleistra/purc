@@ -30,10 +30,10 @@ func main() {
 	listItemRegex := regexp.MustCompile(`^[^\s0-9].*`)
 	listItemInnerLinesRegex := regexp.MustCompile(`^[\s0-9].*`)
 
-	nextSundayRegex := regexp.MustCompile(`Next Sunday`)
-	nextOfferingRegex := regexp.MustCompile(`Next Lord’s Day offering`)
+	nextSundayRegex := regexp.MustCompile(`Lord willing, we will gather next Sunday`)
 	nextSundayAMServiceRegex := regexp.MustCompile(`AM Service: `)
 	nextSundayPMServiceRegex := regexp.MustCompile(`PM Service: `)
+	nextOfferingRegex := regexp.MustCompile(`Next Lord’s Day offering`)
 
 	readFile, err := os.Open("in.txt")
 	if err != nil {
@@ -79,7 +79,7 @@ func main() {
 		}
 
 		if m := nextSundayRegex.MatchString(line); m {
-			outFileLines = append(outFileLines, fmt.Sprintf(`</li></ul><hr /><h2 style="text-align: center;">Lord's Day XX - MMM DD, YYYY</h2>%s`, line))
+			outFileLines = append(outFileLines, fmt.Sprintf(`</li></ul>%s`, line))
 			continue
 		}
 
@@ -94,7 +94,7 @@ func main() {
 		}
 
 		if m := nextOfferingRegex.MatchString(line); m {
-			outFileLines = append(outFileLines, fmt.Sprintf(`<h5><strong><em>%s</em></strong></h5>`, line))
+			outFileLines = append(outFileLines, line)
 			continue
 		}
 
@@ -196,6 +196,7 @@ func main() {
 
 	for _, data := range outFileLines {
 		_, _ = datawriter.WriteString(data)
+		//_, _ = datawriter.WriteString("\n")
 	}
 
 	datawriter.Flush()
