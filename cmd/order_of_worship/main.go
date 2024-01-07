@@ -30,9 +30,9 @@ func main() {
 	listItemRegex := regexp.MustCompile(`^[^\s0-9].*`)
 	listItemInnerLinesRegex := regexp.MustCompile(`^[\s0-9].*`)
 
-	nextSundayRegex := regexp.MustCompile(`Lord willing, we will gather next Sunday`)
-	nextSundayAMServiceRegex := regexp.MustCompile(`AM [S|s]ervice: `)
-	nextSundayPMServiceRegex := regexp.MustCompile(`PM [S|s]ervice: `)
+	nextSundayRegex := regexp.MustCompile(`Next Sunday, Lord willing, we will gather at the feet of Jesus to hear His Word`)
+	nextSundayAMServiceRegex := regexp.MustCompile(`^AM: `)
+	nextSundayPMServiceRegex := regexp.MustCompile(`^PM: `)
 	nextOfferingRegex := regexp.MustCompile(`Next Lord’s Day offering`)
 
 	readFile, err := os.Open("in.txt")
@@ -79,22 +79,22 @@ func main() {
 		}
 
 		if m := nextSundayRegex.MatchString(line); m {
-			outFileLines = append(outFileLines, fmt.Sprintf(`</li></ul>%s`, line))
+			outFileLines = append(outFileLines, fmt.Sprintf(`<p>%s`, line))
 			continue
 		}
 
 		if m := nextSundayAMServiceRegex.MatchString(line); m {
-			outFileLines = append(outFileLines, fmt.Sprintf(`<ul><li>%s</li>`, line))
+			outFileLines = append(outFileLines, fmt.Sprintf(`<br>&emsp;%s`, line))
 			continue
 		}
 
 		if m := nextSundayPMServiceRegex.MatchString(line); m {
-			outFileLines = append(outFileLines, fmt.Sprintf(`<li>%s</li></ul>`, line))
+			outFileLines = append(outFileLines, fmt.Sprintf(`<br>&emsp;%s</p>`, line))
 			continue
 		}
 
 		if m := nextOfferingRegex.MatchString(line); m {
-			outFileLines = append(outFileLines, line)
+			outFileLines = append(outFileLines, fmt.Sprintf(`<p>%s</p>`, line))
 			continue
 		}
 
