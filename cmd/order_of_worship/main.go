@@ -14,11 +14,12 @@ func main() {
 	lineTwoRegex := regexp.MustCompile(`I was glad when they said to me`)
 	lordsDayRegex := regexp.MustCompile(`Lord’s Day [0-9]+ – [a-zA-Z]+ [0-9]+, [0-9]+`)
 
-	serviceNineThirty := regexp.MustCompile(`9:30 AM`)
-	serviceThree := regexp.MustCompile(`3:00 PM`)
+	serviceNineThirty := regexp.MustCompile(`9:30 AM Worship Service`)
+	serviceThree := regexp.MustCompile(`3:00 PM Worship Service`)
 
 	inList := false
 
+	songOfApproach := regexp.MustCompile(`^*Song of Approach [^\s0-9].*`)
 	silentPrayerRegex := regexp.MustCompile(`^*Silent Prayer [^\s0-9].*`)
 	scriptureReadingRegex := regexp.MustCompile(`^Scripture Reading ([^\s0-9].*)`)
 	textReadingRegex := regexp.MustCompile(`^Text ([^\s0-9].*)`)
@@ -29,6 +30,8 @@ func main() {
 	songListItemRegex := regexp.MustCompile(`^([^\s0-9].*) (TPH [0-9A-Z,:\s]+)`)
 	listItemRegex := regexp.MustCompile(`^[^\s0-9].*`)
 	listItemInnerLinesRegex := regexp.MustCompile(`^[\s0-9].*`)
+
+	doxologyRegex := regexp.MustCompile(`^\*Doxology`)
 
 	nextSundayRegex := regexp.MustCompile(`Next Sunday, Lord willing, we will gather at the feet of Jesus to hear His Word`)
 	nextSundayAMServiceRegex := regexp.MustCompile(`^AM: `)
@@ -99,6 +102,11 @@ func main() {
 		}
 
 		if m := silentPrayerRegex.MatchString(line); m {
+			outFileLines = append(outFileLines, fmt.Sprintf(`</li><li>%s`, line))
+			continue
+		}
+
+		if m := songOfApproach.MatchString(line); m {
 			if inList {
 				outFileLines = append(outFileLines, fmt.Sprintf("</li><li>%s", line))
 			} else {
@@ -155,6 +163,12 @@ func main() {
 				outFileLines = append(outFileLines, fmt.Sprintf("<ul><li>Reading through the Psalms: <b>%s</b>", m[1]))
 				inList = true
 			}
+			continue
+		}
+
+		if m := doxologyRegex.MatchString(line); m {
+			outFileLines = append(outFileLines, fmt.Sprintf("</li><li>%s</li></ul>", line))
+			inList = false
 			continue
 		}
 
